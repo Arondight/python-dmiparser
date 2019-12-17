@@ -8,13 +8,17 @@ __version__ = '0.1'
 DmiParserState = Enum (
     'DmiParserState',
     (
-        'GET_SECTS',
-        'GET_PROPS',
-        'GET_PROP_ITEMS',
+        'GET_SECT',
+        'GET_PROP',
+        'GET_PROP_ITEM',
     )
 )
 
 class DmiParserSectionHandle(object):
+    '''A handle looks like this
+
+    Handle 0x0066, DMI type 148, 48 bytes
+    '''
     def __init__(self):
         self.id= ''
         self.type = ''
@@ -23,7 +27,14 @@ class DmiParserSectionHandle(object):
     def __str__(self):
         return json.dumps(self.__dict__)
 
-class DmiParserSectionProps(object):
+class DmiParserSectionProp(object):
+    '''A property looks like this
+
+    Characteristics:
+            3.3 V is provided
+            PME signal is supported
+            SMBus signal is supported
+    '''
     def __init__(self, value):
         self.values = []
 
@@ -37,6 +48,13 @@ class DmiParserSectionProps(object):
         self.values.append(str(item))
 
 class DmiParserSection(object):
+    '''A section looks like this
+
+    On Board Device 1 Information
+            Type: Video
+            Status: Enabled
+            Description: ServerEngines Pilot III
+    '''
     def __init__(self):
         self.handle = None
         self.name = ''
@@ -49,6 +67,11 @@ class DmiParserSection(object):
         self.props[key] = prop
 
 class DmiParser(object):
+    '''This parse dmidecode output to JSON
+
+    text:   output of command dmidecode
+    kwargs: will pass to json.dumps
+    '''
     def __init__(self, text, **kwargs):
         self._text = text
         self._kwargs = kwargs
@@ -75,16 +98,16 @@ class DmiParser(object):
                 continue
 
             if l.startswith('Handle'):
-                state = DmiParserState.GET_SECTS
+                state = DmiParserState.GET_SECT
                 handle = DmiParserSectionHandle()
                 match = re.match(rhandle, l)
                 handle.id, handle.type, handle.bytes = match.groups()
                 continue
 
-            if DmiParserState.GET_SECTS == state:
-                # Add previous section
+            if DmiParserState.GET_SECT == state:
+                # Add previous section if exist
                 if section:
-                    # Add previous prop
+                    # Add previous prop if exist
                     if prop:
                         section.append(k, json.loads(str(prop)))
                         prop = None
@@ -95,12 +118,12 @@ class DmiParser(object):
                 section = DmiParserSection()
                 section.handle = json.loads(str(handle))
                 section.name = l
-                state = DmiParserState.GET_PROPS
+                state = DmiParserState.GET_PROP
                 continue
 
-            if DmiParserState.GET_PROPS == state:
+            if DmiParserState.GET_PROP == state:
                 k, v = [x.strip() for x in l.split(':', 1)]
-                prop = DmiParserSectionProps(v)
+                prop = DmiParserSectionProp(v)
                 lv = self._indentLv(l) - self._indentLv(lines[i+1])
 
                 if v:
@@ -108,18 +131,18 @@ class DmiParser(object):
                         section.append(k, json.loads(str(prop)))
                         prop = None
                     elif -1 == lv:
-                        state = DmiParserState.GET_PROP_ITEMS
+                        state = DmiParserState.GET_PROP_ITEM
                         continue
                 else:
                     if -1 == lv:
-                        state = DmiParserState.GET_PROP_ITEMS
+                        state = DmiParserState.GET_PROP_ITEM
                         continue
 
                 # Next section for this handle
                 if not self._indentLv(lines[i+1]):
-                    state = DmiParserState.GET_SECTS
+                    state = DmiParserState.GET_SECT
 
-            if DmiParserState.GET_PROP_ITEMS == state:
+            if DmiParserState.GET_PROP_ITEM == state:
                 prop.append(l.strip())
 
                 lv = self._indentLv(l) - self._indentLv(lines[i+1])
@@ -129,9 +152,9 @@ class DmiParser(object):
                     prop = None
 
                     if lv > 1:
-                        state = DmiParserState.GET_SECTS
+                        state = DmiParserState.GET_SECT
                     else:
-                        state = DmiParserState.GET_PROPS
+                        state = DmiParserState.GET_PROP
 
 if '__main__' == __name__:
     text='''# dmidecode 3.0
