@@ -31,7 +31,7 @@ Base Board Information
 	Type: Motherboard
 	Contained Object Handles: 0
 
-'''
+    '''
 
     # just print
     parser = DmiParser(text)

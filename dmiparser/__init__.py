@@ -3,6 +3,8 @@ import json
 from itertools import takewhile
 from enum import Enum
 
+__version__ = '0.1'
+
 DmiParserState = Enum (
     'DmiParserState',
     (
@@ -80,7 +82,13 @@ class DmiParser(object):
                 continue
 
             if DmiParserState.GET_SECTS == state:
+                # Add previous section
                 if section:
+                    # Add previous prop
+                    if prop:
+                        section.append(k, json.loads(str(prop)))
+                        prop = None
+
                     self._sections.append(json.loads(str(section)))
                     section = None
 
@@ -118,6 +126,7 @@ class DmiParser(object):
 
                 if lv:
                     section.append(k, json.loads(str(prop)))
+                    prop = None
 
                     if lv > 1:
                         state = DmiParserState.GET_SECTS
@@ -144,7 +153,7 @@ Base Board Information
 	Type: Motherboard
 	Contained Object Handles: 0
 
-'''
+    '''
 
     # just print
     parser = DmiParser(text)

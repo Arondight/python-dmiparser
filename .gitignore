@@ -4,6 +4,10 @@
 
 # cache
 *.pyc
+.cache/
+.tox/
+.eggs/
+.pytest_cache/
 __pycache__/
 
 # tags
@@ -14,4 +18,5 @@ tags*
 build/
 dist/
 *.egg-info/
+*.dist-info/
 
