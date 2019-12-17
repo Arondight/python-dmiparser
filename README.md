@@ -56,5 +56,5 @@ Copyright (c) 2019 Qin Fandong
 
 ## LICENSE
 
-Read [LICENSE](LICENSE)
+Read [LICENSE](LICENSE).
 
