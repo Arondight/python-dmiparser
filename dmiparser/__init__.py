@@ -77,6 +77,11 @@ class DmiParser(object):
         self._kwargs = kwargs
         self._indentLv = lambda l: len(list(takewhile(lambda c: "\t" == c, l)))
         self._sections = []
+
+        if type(text) is not str:
+            raise TypeError("%s want a %s but got %s" %(
+                self.__class__, type(__name__), type(text)))
+
         self._parse(text)
 
     def __str__(self):
