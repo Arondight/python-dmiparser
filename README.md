@@ -50,6 +50,10 @@ Base Board Information
     print(dmidata)
 ```
 
+## EXAMPLE
+
+Here is an simple [example](examples/dmidecode.py) to show how to use dmiparser.
+
 ## COPYRIGHT
 
 Copyright (c) 2019 Qin Fandong

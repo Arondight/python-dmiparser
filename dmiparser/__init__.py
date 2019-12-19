@@ -3,7 +3,7 @@ import json
 from itertools import takewhile
 from enum import Enum
 
-__version__ = '0.1'
+__version__ = '0.2'
 
 DmiParserState = Enum (
     'DmiParserState',
@@ -68,11 +68,13 @@ class DmiParserSection(object):
 
 class DmiParser(object):
     '''This parse dmidecode output to JSON
-
-    text:   output of command dmidecode
-    kwargs: will pass to json.dumps
     '''
+
     def __init__(self, text, **kwargs):
+        '''
+        text:   str, output of command dmidecode
+        kwargs: these will pass to json.dumps
+        '''
         self._text = text
         self._kwargs = kwargs
         self._indentLv = lambda l: len(list(takewhile(lambda c: "\t" == c, l)))
