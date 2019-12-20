@@ -3,7 +3,7 @@ import json
 from itertools import takewhile
 from enum import Enum
 
-__version__ = '0.2'
+__version__ = '0.3'
 
 DmiParserState = Enum (
     'DmiParserState',
@@ -97,9 +97,16 @@ class DmiParser(object):
         state = None
 
         for i, l in enumerate(lines):
-            if i == len(lines) - 1:
-                self._sections.append(json.loads(str(section)))
-                section = None
+            if i == len(lines) - 1 or DmiParserState.GET_SECT == state:
+                # Add previous section if exist
+                if section:
+                    # Add previous prop if exist
+                    if prop:
+                        section.append(k, json.loads(str(prop)))
+                        prop = None
+
+                    self._sections.append(json.loads(str(section)))
+                    section = None
 
             if not l:
                 continue
@@ -112,16 +119,6 @@ class DmiParser(object):
                 continue
 
             if DmiParserState.GET_SECT == state:
-                # Add previous section if exist
-                if section:
-                    # Add previous prop if exist
-                    if prop:
-                        section.append(k, json.loads(str(prop)))
-                        prop = None
-
-                    self._sections.append(json.loads(str(section)))
-                    section = None
-
                 section = DmiParserSection()
                 section.handle = json.loads(str(handle))
                 section.name = l

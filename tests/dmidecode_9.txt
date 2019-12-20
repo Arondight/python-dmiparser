@@ -1,0 +1,108 @@
+# dmidecode 3.0
+Getting SMBIOS data from sysfs.
+SMBIOS 2.7 present.
+
+Handle 0x0006, DMI type 9, 17 bytes
+System Slot Information
+	Designation: J3B2 - Riser 1, slot 2
+	Type: x8 PCI Express 3 x16
+	Current Usage: Available
+	Length: Long
+	ID: 18
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+		SMBus signal is supported
+	Bus Address: 0000:00:03.0
+
+Handle 0x0007, DMI type 9, 17 bytes
+System Slot Information
+	Designation: J3B2 - Riser 1, slot 1
+	Type: x8 PCI Express 3 x16
+	Current Usage: In Use
+	Length: Long
+	ID: 17
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+		SMBus signal is supported
+	Bus Address: 0000:00:03.2
+
+Handle 0x0008, DMI type 9, 17 bytes
+System Slot Information
+	Designation: J3B2 - Riser 1, slot 3
+	Type: x8 PCI Express 3 x8
+	Current Usage: In Use
+	Length: Long
+	ID: 19
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+		SMBus signal is supported
+	Bus Address: 0000:80:01.0
+
+Handle 0x0009, DMI type 9, 17 bytes
+System Slot Information
+	Designation: J6B1 - Riser 2, slot 2
+	Type: x8 PCI Express 3 x16
+	Current Usage: In Use
+	Length: Long
+	ID: 34
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+		SMBus signal is supported
+	Bus Address: 0000:80:02.0
+
+Handle 0x005B, DMI type 9, 17 bytes
+System Slot Information
+	Designation: J6B1 - Riser 2, slot 1
+	Type: x8 PCI Express 3 x16
+	Current Usage: In Use
+	Length: Long
+	ID: 33
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+		SMBus signal is supported
+	Bus Address: 0000:80:02.2
+
+Handle 0x005C, DMI type 9, 17 bytes
+System Slot Information
+	Designation: J6B1 - Riser 2, slot 3
+	Type: x8 PCI Express 3 x8
+	Current Usage: In Use
+	Length: Long
+	ID: 35
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+		SMBus signal is supported
+	Bus Address: 0000:80:03.2
+
+Handle 0x005D, DMI type 9, 17 bytes
+System Slot Information
+	Designation: J6B2 - Riser 3, slot 1
+	Type: x4 PCI Express 3 x8
+	Current Usage: Available
+	Length: Long
+	ID: 49
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+		SMBus signal is supported
+	Bus Address: 0000:80:00.0
+
+Handle 0x005E, DMI type 9, 17 bytes
+System Slot Information
+	Designation: J6B2 - Riser 3, slot 2
+	Type: x8 PCI Express 3 x8
+	Current Usage: Available
+	Length: Long
+	ID: 50
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+		SMBus signal is supported
+	Bus Address: 0000:80:03.0
+

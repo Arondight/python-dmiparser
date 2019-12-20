@@ -119,6 +119,7 @@ if '__main__' == __name__:
 
     for id, name in secs:
         getvals = partial(dmi.getProp, id=id, name=name)
+        # XXX Here assumes that all items exist
         getfirst = lambda *args: getvals(*args)[0]
 
         print("%s:" %(getfirst('Socket Designation')))

@@ -1,0 +1,11 @@
+# dmidecode 3.0
+Getting SMBIOS data from sysfs.
+SMBIOS 2.7 present.
+
+Handle 0x000C, DMI type 13, 22 bytes
+BIOS Language Information
+	Language Description Format: Abbreviated
+	Installable Languages: 1
+		enUS
+	Currently Installed Language: enUS
+

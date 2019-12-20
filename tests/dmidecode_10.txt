@@ -1,0 +1,38 @@
+# dmidecode 3.0
+Getting SMBIOS data from sysfs.
+SMBIOS 2.7 present.
+
+Handle 0x005F, DMI type 10, 20 bytes
+On Board Device 1 Information
+	Type: Video
+	Status: Enabled
+	Description: ServerEngines Pilot III
+On Board Device 2 Information
+	Type: Ethernet
+	Status: Enabled
+	Description: Intel I350
+On Board Device 3 Information
+	Type: SAS Controller
+	Status: Disabled
+	Description: SAS
+On Board Device 4 Information
+	Type: SATA Controller
+	Status: Enabled
+	Description: PCH Integrated SATA Controller
+On Board Device 5 Information
+	Type: Ethernet
+	Status: Disabled
+	Description: IO Module
+On Board Device 6 Information
+	Type: SATA Controller
+	Status: Enabled
+	Description: PCH Integrated sSATA Controller
+On Board Device 7 Information
+	Type: Ethernet
+	Status: Enabled
+	Description: Intel I350
+On Board Device 8 Information
+	Type: Ethernet
+	Status: Disabled
+	Description: IO Module
+
