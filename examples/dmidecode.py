@@ -36,17 +36,17 @@ class DmiDecode(object):
         return self._text
 
     def data(self):
-        '''return list with many dicts
+        '''return [{}, ...]
         '''
         return self._data
 
     def sections(self):
-        '''return  [(id, name), ...] list
+        '''return  [(id, name), ...]
         '''
-        return ((x['handle']['id'], x['name']) for x in self._data)
+        return [(x['handle']['id'], x['name']) for x in self._data]
 
     def get(self, *keys, id=None, name=None):
-        '''get information for sections
+        '''get information for a section
 
         keys:   str, hash keys for a section
         id:     str, section id like '0x0020'
@@ -54,9 +54,6 @@ class DmiDecode(object):
         '''
         data = self._data
         values = []
-        keys_ = ['props']
-        keys_.extend(list(keys))
-        keys_.append('values')
 
         if len (keys) == 0:
             raise AttributeError ("%s.%s does not accept empty parameters"
@@ -71,7 +68,7 @@ class DmiDecode(object):
 
             d_ = d
 
-            for k in keys_:
+            for k in keys:
                 try:
                     d_ = d_[k]
                 except (KeyError, TypeError):
@@ -82,6 +79,18 @@ class DmiDecode(object):
                 values.extend(d_)
 
         return values
+
+    def getProp(self, prop, id=None, name=None):
+        '''get values for a section property
+
+        prop:   str, property name
+        id:     str, section id like '0x0020'
+        name:   str, section name like 'Processor Information'
+        '''
+        keys_ = ['props']
+        keys_.extend([prop, 'values'])
+
+        return self.get(*keys_, id=id, name=name)
 
 if '__main__' == __name__:
     '''Show CPU information, will print output like below.
@@ -109,7 +118,7 @@ if '__main__' == __name__:
     secs = dmi.sections()
 
     for id, name in secs:
-        getvals = partial(dmi.get, id=id, name=name)
+        getvals = partial(dmi.getProp, id=id, name=name)
         getfirst = lambda *args: getvals(*args)[0]
 
         print("%s:" %(getfirst('Socket Designation')))
