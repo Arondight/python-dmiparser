@@ -3,6 +3,8 @@ import json
 from subprocess import check_output
 from dmiparser import DmiParser
 
+__all__ = ['DmiDecode']
+
 class DmiDecode(object):
     '''This is an simple example to show how to use dmiparser.
     '''

@@ -5,9 +5,11 @@ from dmiparser import DmiParser
 RDIR = Path(Path(__file__).resolve()).parents[0]
 
 def test_dmidecode_full():
-    text = open(RDIR / 'dmidecode_full.txt', 'rt').read()
-    data = json.loads(str(DmiParser(text)))
     testnum = 0
+
+    with open(RDIR / 'dmidecode_full.txt', 'rt') as f:
+        text = f.read()
+        data = json.loads(str(DmiParser(text)))
 
     '''
     Handle 0xFEFF, DMI type 127, 4 bytes

@@ -5,9 +5,11 @@ from dmiparser import DmiParser
 RDIR = Path(Path(__file__).resolve()).parents[0]
 
 def test_dmidecode_32():
-    text = open(RDIR / 'dmidecode_32.txt', 'rt').read()
-    data = json.loads(str(DmiParser(text)))
     testnum = 0
+
+    with open(RDIR / 'dmidecode_32.txt', 'rt') as f:
+        text = f.read()
+        data = json.loads(str(DmiParser(text)))
 
     for d in data:
         '''
