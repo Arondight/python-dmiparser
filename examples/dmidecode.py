@@ -9,19 +9,15 @@ class DmiDecode(object):
     '''This is an simple example to show how to use dmiparser.
     '''
 
-    def __init__(self, arguments=None, command='dmidecode'):
+    def __init__(self, arguments:str=None, command:str='dmidecode'):
         '''
-        arguments:  str, command's extra arguments like '-t 4'
-        command:    str, dmidecode command
+        arguments:  command's extra arguments like '-t 4'
+        command:    dmidecode command
         '''
         self._command = command
 
-        if arguments and type(arguments) is str:
+        if arguments:
             self._command = "%s %s" %(self._command, arguments)
-
-        if type(command) is not str:
-            raise TypeError("%s want a %s but got %s" %(
-                self.__class__, type(__name__), type(command)))
 
         try:
             text = check_output(self._command, shell=True, encoding='utf8')
@@ -47,12 +43,12 @@ class DmiDecode(object):
         '''
         return [(x['handle']['id'], x['name']) for x in self._data]
 
-    def get(self, *keys, id=None, name=None):
+    def get(self, *keys:str, id:str=None, name:str=None):
         '''get information for a section
 
-        keys:   str, hash keys for a section
-        id:     str, section id like '0x0020'
-        name:   str, section name like 'Processor Information'
+        keys:   hash keys for a section
+        id:     section id like '0x0020'
+        name:   section name like 'Processor Information'
         '''
         data = self._data
         values = []
@@ -82,12 +78,12 @@ class DmiDecode(object):
 
         return values
 
-    def getProp(self, prop, id=None, name=None):
+    def getProp(self, prop:str, id:str=None, name:str=None):
         '''get values for a section property
 
-        prop:   str, property name
-        id:     str, section id like '0x0020'
-        name:   str, section name like 'Processor Information'
+        prop:   property name
+        id:     section id like '0x0020'
+        name:   section name like 'Processor Information'
         '''
         keys_ = ['props']
         keys_.extend([prop, 'values'])

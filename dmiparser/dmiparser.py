@@ -35,7 +35,7 @@ class DmiParserSectionProp(object):
             PME signal is supported
             SMBus signal is supported
     '''
-    def __init__(self, value):
+    def __init__(self, value:str):
         self.values = []
 
         if value:
@@ -44,8 +44,8 @@ class DmiParserSectionProp(object):
     def __str__(self):
         return json.dumps(self.__dict__)
 
-    def append(self, item):
-        self.values.append(str(item))
+    def append(self, item:str):
+        self.values.append(item)
 
 class DmiParserSection(object):
     '''A section looks like this
@@ -63,16 +63,16 @@ class DmiParserSection(object):
     def __str__(self):
         return json.dumps(self.__dict__)
 
-    def append(self, key, prop):
+    def append(self, key:str, prop:str):
         self.props[key] = prop
 
 class DmiParser(object):
     '''This parse dmidecode output to JSON
     '''
 
-    def __init__(self, text, **kwargs):
+    def __init__(self, text:str, **kwargs):
         '''
-        text:   str, output of command dmidecode
+        text:   output of command dmidecode
         kwargs: these will pass to json.dumps
         '''
         self._text = text
@@ -89,7 +89,7 @@ class DmiParser(object):
     def __str__(self):
         return json.dumps(self._sections, **self._kwargs)
 
-    def _parse(self, text):
+    def _parse(self, text:str):
         lines = self._text.splitlines()
         rhandle = r'^Handle\s(.+?),\sDMI\stype\s(\d+?),\s(\d+?)\sbytes$'
         section = None
