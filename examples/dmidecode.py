@@ -3,24 +3,24 @@ import json
 from subprocess import check_output
 from dmiparser import DmiParser
 
-__all__ = ['DmiDecode']
+__all__ = ["DmiDecode"]
+
 
 class DmiDecode(object):
-    '''This is an simple example to show how to use dmiparser.
-    '''
+    """This is an simple example to show how to use dmiparser."""
 
-    def __init__(self, arguments:str=None, command:str='dmidecode'):
-        '''
+    def __init__(self, arguments: str = None, command: str = "dmidecode"):
+        """
         arguments:  command's extra arguments like '-t 4'
         command:    dmidecode command
-        '''
+        """
         self._command = command
 
         if arguments:
-            self._command = "%s %s" %(self._command, arguments)
+            self._command = "{} {}".format(self._command, arguments)
 
         try:
-            text = check_output(self._command, shell=True, encoding='utf8')
+            text = check_output(self._command, shell=True, encoding="utf8")
             parser = DmiParser(text)
             self._text = str(parser)
             self._data = json.loads(self._text)
@@ -29,39 +29,35 @@ class DmiDecode(object):
             raise
 
     def text(self):
-        '''return str
-        '''
+        """return str"""
         return self._text
 
     def data(self):
-        '''return [{}, ...]
-        '''
+        """return [{}, ...]"""
         return self._data
 
     def sections(self):
-        '''return  [(id, name), ...]
-        '''
-        return [(x['handle']['id'], x['name']) for x in self._data]
+        """return  [(id, name), ...]"""
+        return [(x["handle"]["id"], x["name"]) for x in self._data]
 
-    def get(self, *keys:str, id:str=None, name:str=None):
-        '''get information for a section
+    def get(self, *keys: str, id: str = None, name: str = None):
+        """get information for a section
 
         keys:   hash keys for a section
         id:     section id like '0x0020'
         name:   section name like 'Processor Information'
-        '''
+        """
         data = self._data
         values = []
 
-        if len (keys) == 0:
-            raise AttributeError ("%s.%s does not accept empty parameters"
-                %(self.__class__, self.get.__name__))
+        if len(keys) == 0:
+            raise AttributeError("{}.{} does not accept empty parameters".format(self.__class__, self.get.__name__))
 
         for d in data:
-            if id and id != d['handle']['id']:
+            if id and id != d["handle"]["id"]:
                 continue
 
-            if name and name != d['name']:
+            if name and name != d["name"]:
                 continue
 
             d_ = d
@@ -78,20 +74,21 @@ class DmiDecode(object):
 
         return values
 
-    def getProp(self, prop:str, id:str=None, name:str=None):
-        '''get values for a section property
+    def getProp(self, prop: str, id: str = None, name: str = None):
+        """get values for a section property
 
         prop:   property name
         id:     section id like '0x0020'
         name:   section name like 'Processor Information'
-        '''
-        keys_ = ['props']
-        keys_.extend([prop, 'values'])
+        """
+        keys_ = ["props"]
+        keys_.extend([prop, "values"])
 
         return self.get(*keys_, id=id, name=name)
 
-if '__main__' == __name__:
-    '''Show CPU information, will print output like below.
+
+if "__main__" == __name__:
+    """Show CPU information, will print output like below.
 
     CPU1:
         Family: Xeon
@@ -109,10 +106,10 @@ if '__main__' == __name__:
         Status: Populated, Enabled
         Core: 10/10
         Thread: 20
-    '''
+    """
     from functools import partial
 
-    dmi = DmiDecode('-t 4')     # Type 4 is Processor
+    dmi = DmiDecode("-t 4")  # Type 4 is Processor
     secs = dmi.sections()
 
     for id, name in secs:
@@ -120,13 +117,12 @@ if '__main__' == __name__:
         # XXX Here assumes that all items exist
         getfirst = lambda *args: getvals(*args)[0]
 
-        print("%s:" %(getfirst('Socket Designation')))
+        print("{}:".format(getfirst("Socket Designation")))
 
-        print("\tFamily: %s" %(getfirst('Family')))
-        print("\tVersion: %s" %(getfirst('Version')))
-        print("\tVoltage: %s" %(getfirst('Voltage')))
-        print("\tSpeed: %s/%s" %(getfirst('Current Speed'), getfirst('Max Speed')))
-        print("\tStatus: %s" %(getfirst('Status')))
-        print("\tCore: %s/%s" %(getfirst('Core Enabled'), getfirst('Core Count')))
-        print("\tThread: %s" %(getfirst('Thread Count')))
-
+        print("\tFamily: {}".format(getfirst("Family")))
+        print("\tVersion: {}".format(getfirst("Version")))
+        print("\tVoltage: {}".format(getfirst("Voltage")))
+        print("\tSpeed: {}/{}".format(getfirst("Current Speed"), getfirst("Max Speed")))
+        print("\tStatus: {}".format(getfirst("Status")))
+        print("\tCore: {}/{}".format(getfirst("Core Enabled"), getfirst("Core Count")))
+        print("\tThread: {}".format(getfirst("Thread Count")))
