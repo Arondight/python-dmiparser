@@ -1,18 +1,17 @@
-import re
 import json
+import re
+from enum import Enum, auto
 from itertools import takewhile
-from enum import Enum
+from typing import Union
 
 __all__ = ["DmiParser"]
 
-DmiParserState = Enum(
-    "DmiParserState",
-    (
-        "GET_SECT",
-        "GET_PROP",
-        "GET_PROP_ITEM",
-    ),
-)
+
+class DmiParserState(Enum):
+    NONE = auto()
+    GET_SECT = auto()
+    GET_PROP = auto()
+    GET_PROP_ITEM = auto()
 
 
 class DmiParserSectionHandle(object):
@@ -21,12 +20,12 @@ class DmiParserSectionHandle(object):
     Handle 0x0066, DMI type 148, 48 bytes
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.id = ""
         self.type = ""
         self.bytes = 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         return json.dumps(self.__dict__)
 
 
@@ -39,16 +38,16 @@ class DmiParserSectionProp(object):
             SMBus signal is supported
     """
 
-    def __init__(self, value: str):
+    def __init__(self, value: str) -> None:
         self.values = []
 
         if value:
             self.append(value)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return json.dumps(self.__dict__)
 
-    def append(self, item: str):
+    def append(self, item: str) -> None:
         self.values.append(item)
 
 
@@ -61,48 +60,48 @@ class DmiParserSection(object):
             Description: ServerEngines Pilot III
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.handle = None
         self.name = ""
         self.props = {}
 
-    def __str__(self):
+    def __str__(self) -> str:
         return json.dumps(self.__dict__)
 
-    def append(self, key: str, prop: str):
+    def append(self, key: str, prop: str) -> None:
         self.props[key] = prop
 
 
 class DmiParser(object):
     """This parse dmidecode output to JSON"""
 
-    def __init__(self, text: str, **kwargs):
+    def __init__(self, text: str, **kwargs) -> None:
         """
-        text:   output of command dmidecode
-        kwargs: these will pass to json.dumps
+        @param text: output of command dmidecode
+        @param kwargs: these will pass to json.dumps()
         """
+        if type(text) is not str:
+            raise TypeError("{} want a {} but got {}".format(self.__class__, type(__name__), type(text)))
+
         self._text = text
         self._kwargs = kwargs
         self._indentLv = lambda l: len(list(takewhile(lambda c: "\t" == c, l)))
         self._sections = []
 
-        if type(text) is not str:
-            raise TypeError("{} want a {} but got {}".format(self.__class__, type(__name__), type(text)))
+        self._parse()
 
-        self._parse(text)
-
-    def __str__(self):
+    def __str__(self) -> str:
         return json.dumps(self._sections, **self._kwargs)
 
-    def _parse(self, text: str):
+    def _parse(self) -> None:
+        state: DmiParserState = DmiParserState.NONE
+        handle: Union[DmiParserSectionHandle, None] = None
+        prop: Union[DmiParserSectionProp, None] = None
+        section: Union[DmiParserSection, None] = None
+        k: Union[str, None] = None
         lines = self._text.splitlines()
-        rhandle = r"^Handle\s(.+?),\sDMI\stype\s(\d+?),\s(\d+?)\sbytes$"
-        section = None
-        prop = None
-        state = None
-        k, v = None, None
 
-        for i, l in enumerate(lines):
+        for i, line in enumerate(lines):
             if i == len(lines) - 1 or DmiParserState.GET_SECT == state:
                 # Add previous section if exist
                 if section:
@@ -114,57 +113,55 @@ class DmiParser(object):
                     self._sections.append(json.loads(str(section)))
                     section = None
 
-            if not l:
+            if not line:
                 continue
 
-            if l.startswith("Handle"):
+            if line.startswith("Handle"):
+                regex = r"^Handle\s(.+?),\sDMI\stype\s(\d+?),\s(\d+?)\sbytes$"
                 state = DmiParserState.GET_SECT
                 handle = DmiParserSectionHandle()
-                match = re.match(rhandle, l)
+                match = re.match(regex, line)
                 handle.id, handle.type, handle.bytes = match.groups()
                 continue
 
             if DmiParserState.GET_SECT == state:
                 section = DmiParserSection()
                 section.handle = json.loads(str(handle))
-                section.name = l
+                section.name = line
                 state = DmiParserState.GET_PROP
                 continue
 
             if DmiParserState.GET_PROP == state:
-                k, v = [x.strip() for x in l.split(":", 1)]
+                k, v = [x.strip() for x in line.split(":", 1)]
                 prop = DmiParserSectionProp(v)
-                lv = self._indentLv(l) - self._indentLv(lines[i + 1])
+                lv = self._indentLv(line) - self._indentLv(lines[i + 1])
 
                 if v:
-                    if not lv:
-                        section.append(k, json.loads(str(prop)))
-                        prop = None
-                    elif -1 == lv:
+                    if -1 == lv:
                         state = DmiParserState.GET_PROP_ITEM
                         continue
+
+                    if 0 == lv:
+                        section.append(k, json.loads(str(prop)))
+                        prop = None
                 else:
                     if -1 == lv:
                         state = DmiParserState.GET_PROP_ITEM
                         continue
 
                 # Next section for this handle
-                if not self._indentLv(lines[i + 1]):
+                if 0 == self._indentLv(lines[i + 1]):
                     state = DmiParserState.GET_SECT
 
             if DmiParserState.GET_PROP_ITEM == state:
-                prop.append(l.strip())
+                prop.append(line.strip())
 
-                lv = self._indentLv(l) - self._indentLv(lines[i + 1])
+                lv = self._indentLv(line) - self._indentLv(lines[i + 1])
 
-                if lv:
+                if 0 != lv:
                     section.append(k, json.loads(str(prop)))
                     prop = None
-
-                    if lv > 1:
-                        state = DmiParserState.GET_SECT
-                    else:
-                        state = DmiParserState.GET_PROP
+                    state = DmiParserState.GET_SECT if lv > 1 else DmiParserState.GET_PROP
 
 
 if "__main__" == __name__:
@@ -187,20 +184,13 @@ Base Board Information
 	Type: Motherboard
 	Contained Object Handles: 0
 
-    """
+"""
 
-    # just print
     parser = DmiParser(text)
     # parser = DmiParser(text, sort_keys=True, indent=2)
-    print("parser is {}".format(type(parser)))
-    print(parser)
 
-    # if you want a string
-    dmistr = str(parser)
-    print("dmistr is {}".format(type(dmistr)))
-    print(dmistr)
+    # get string
+    print(str(parser))
 
-    # if you want a data structure
-    dmidata = json.loads(str(parser))
-    print("dmidata is {}".format(type(dmidata)))
-    print(dmidata)
+    # get object
+    print(json.loads(str(parser)))

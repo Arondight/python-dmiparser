@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 import json
 from subprocess import check_output
+from typing import Any, Callable, Union
+
 from dmiparser import DmiParser
 
 __all__ = ["DmiDecode"]
 
 
 class DmiDecode(object):
-    """This is an simple example to show how to use dmiparser."""
+    """This is a simple example to show how to use dmiparser"""
 
-    def __init__(self, arguments: str = None, command: str = "dmidecode"):
+    def __init__(self, arguments: str = None, command: str = "dmidecode") -> None:
         """
-        arguments:  command's extra arguments like '-t 4'
-        command:    dmidecode command
+        @param arguments: command's extra arguments like "-t 4"
+        @param command: a executable dmidecode command
         """
         self._command = command
 
@@ -24,34 +26,31 @@ class DmiDecode(object):
             parser = DmiParser(text)
             self._text = str(parser)
             self._data = json.loads(self._text)
-        except:
+        except Exception:
             # XXX do something here
             raise
 
-    def text(self):
-        """return str"""
+    def text(self) -> str:
         return self._text
 
-    def data(self):
-        """return [{}, ...]"""
+    def data(self) -> list[Any]:
         return self._data
 
-    def sections(self):
-        """return  [(id, name), ...]"""
+    def sections(self) -> list[Union[Any, Any]]:
         return [(x["handle"]["id"], x["name"]) for x in self._data]
 
-    def get(self, *keys: str, id: str = None, name: str = None):
+    def get(self, *keys: str, id: str = "", name: str = "") -> list[str]:
         """get information for a section
 
-        keys:   hash keys for a section
-        id:     section id like '0x0020'
-        name:   section name like 'Processor Information'
+        @param keys: hash keys for a section
+        @param id: section id like '0x0020'
+        @param name: section name like 'Processor Information'
         """
-        data = self._data
-        values = []
-
         if len(keys) == 0:
             raise AttributeError("{}.{} does not accept empty parameters".format(self.__class__, self.get.__name__))
+
+        data = self._data
+        values: list[str] = []
 
         for d in data:
             if id and id != d["handle"]["id"]:
@@ -74,12 +73,12 @@ class DmiDecode(object):
 
         return values
 
-    def getProp(self, prop: str, id: str = None, name: str = None):
+    def getProp(self, prop: str, id: str = None, name: str = None) -> list[str]:
         """get values for a section property
 
-        prop:   property name
-        id:     section id like '0x0020'
-        name:   section name like 'Processor Information'
+        @param prop: property name
+        @param id: section id like '0x0020'
+        @param name: section name like 'Processor Information'
         """
         keys_ = ["props"]
         keys_.extend([prop, "values"])
@@ -113,16 +112,16 @@ if "__main__" == __name__:
     secs = dmi.sections()
 
     for id, name in secs:
-        getvals = partial(dmi.getProp, id=id, name=name)
+        getVals = partial(dmi.getProp, id=id, name=name)
         # XXX Here assumes that all items exist
-        getfirst = lambda *args: getvals(*args)[0]
+        getFirst: Callable[[Any], Any] = lambda *args: getVals(*args)[0]
 
-        print("{}:".format(getfirst("Socket Designation")))
+        print("{}:".format(getFirst("Socket Designation")))
 
-        print("\tFamily: {}".format(getfirst("Family")))
-        print("\tVersion: {}".format(getfirst("Version")))
-        print("\tVoltage: {}".format(getfirst("Voltage")))
-        print("\tSpeed: {}/{}".format(getfirst("Current Speed"), getfirst("Max Speed")))
-        print("\tStatus: {}".format(getfirst("Status")))
-        print("\tCore: {}/{}".format(getfirst("Core Enabled"), getfirst("Core Count")))
-        print("\tThread: {}".format(getfirst("Thread Count")))
+        print("\tFamily: {}".format(getFirst("Family")))
+        print("\tVersion: {}".format(getFirst("Version")))
+        print("\tVoltage: {}".format(getFirst("Voltage")))
+        print("\tSpeed: {}/{}".format(getFirst("Current Speed"), getFirst("Max Speed")))
+        print("\tStatus: {}".format(getFirst("Status")))
+        print("\tCore: {}/{}".format(getFirst("Core Enabled"), getFirst("Core Count")))
+        print("\tThread: {}".format(getFirst("Thread Count")))

@@ -1,12 +1,12 @@
 import json
-from pathlib import Path
 from dmiparser import DmiParser
+from pathlib import Path
 
 RDIR = Path(Path(__file__).resolve()).parents[0]
 
 
-def test_dmidecode_10():
-    testnum = 0
+def test_dmidecode_10() -> None:
+    count = 0
     on_board_device = 0
 
     with open(RDIR / "dmidecode_10.txt", "rt") as f:
@@ -29,6 +29,6 @@ def test_dmidecode_10():
             on_board_device += 1
 
     assert 8 == on_board_device
-    testnum += 1
+    count += 1
 
-    assert 1 == testnum
+    assert 1 == count
