@@ -131,10 +131,14 @@ class DmiParser(object):
                 state = DmiParserState.GET_PROP
                 continue
 
+            lv = self._indentLv(line)
+
+            if i < len(lines) - 1:
+                lv -= self._indentLv(lines[i + 1])
+
             if DmiParserState.GET_PROP == state:
                 k, v = [x.strip() for x in line.split(":", 1)]
                 prop = DmiParserSectionProp(v)
-                lv = self._indentLv(line) - self._indentLv(lines[i + 1])
 
                 if v:
                     if -1 == lv:
@@ -150,13 +154,12 @@ class DmiParser(object):
                         continue
 
                 # Next section for this handle
-                if 0 == self._indentLv(lines[i + 1]):
-                    state = DmiParserState.GET_SECT
+                if i < len(lines) - 1:
+                    if 0 == self._indentLv(lines[i + 1]):
+                        state = DmiParserState.GET_SECT
 
             if DmiParserState.GET_PROP_ITEM == state:
                 prop.append(line.strip())
-
-                lv = self._indentLv(line) - self._indentLv(lines[i + 1])
 
                 if 0 != lv:
                     section.append(k, json.loads(str(prop)))
