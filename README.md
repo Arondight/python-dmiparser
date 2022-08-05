@@ -75,15 +75,14 @@ if "__main__" == __name__:
 ### Use the default wrapper
 
 ```python
-from dmiparser.wrapper import DmiDecode
-
+from dmiparser.wrapper import DmiDecoder
 
 if "__main__" == __name__:
     from functools import partial
     from typing import Callable, Any
 
 
-    def getCpuInfo(dmidecode) -> str:
+    def getCpuInfo(dmidecoder) -> str:
         """Get CPU information, will return text like below.
 
         CPU1:
@@ -108,9 +107,9 @@ if "__main__" == __name__:
         """
         text = ""
 
-        for id, name in dmidecode.sections:
+        for id, name in dmidecoder.sections:
             def getFirst(*args):
-                vals = dmidecode.getProp(*args, id=id, name=name)
+                vals = dmidecoder.getProp(*args, id=id, name=name)
                 return vals[0] if len(vals) > 0 else None
 
             text += "{}:\n".format(getFirst("Socket Designation"))
@@ -141,9 +140,9 @@ if "__main__" == __name__:
             brn()
 
 
-    dmidecode4 = DmiDecode("-t 4", sort_keys=True, indent=2)  # Type 4 is Processor
+    dmidecoder4 = DmiDecoder("-t 4", sort_keys=True, indent=2)  # Type 4 is Processor
 
-    reportSecs(dmidecode4.text, str(dmidecode4.data), getCpuInfo(dmidecode4))
+    reportSecs(dmidecoder4.text, str(dmidecoder4.data), getCpuInfo(dmidecoder4))
 ```
 
 > Tip: Superuser permissions are required here to run `dmidecode`.

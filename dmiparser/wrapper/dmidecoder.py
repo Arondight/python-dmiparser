@@ -3,10 +3,10 @@ from subprocess import check_output
 
 from dmiparser import DmiParser
 
-__all__ = ["DmiDecode"]
+__all__ = ["DmiDecoder"]
 
 
-class DmiDecode(object):
+class DmiDecoder(object):
     """This is a simple dmiparser wrapper"""
 
     def __init__(self, arguments: str = None, command: str = "dmidecode", **kwargs) -> None:
@@ -104,7 +104,7 @@ if "__main__" == __name__:
     from typing import Callable, Any
 
 
-    def getCpuInfo(dmidecode) -> str:
+    def getCpuInfo(dmidecoder) -> str:
         """Get CPU information, will return text like below.
 
         CPU1:
@@ -129,9 +129,9 @@ if "__main__" == __name__:
         """
         text = ""
 
-        for id, name in dmidecode.sections:
+        for id, name in dmidecoder.sections:
             def getFirst(*args):
-                vals = dmidecode.getProp(*args, id=id, name=name)
+                vals = dmidecoder.getProp(*args, id=id, name=name)
                 return vals[0] if len(vals) > 0 else None
 
             text += "{}:\n".format(getFirst("Socket Designation"))
@@ -162,6 +162,6 @@ if "__main__" == __name__:
             brn()
 
 
-    dmidecode4 = DmiDecode("-t 4", sort_keys=True, indent=2)  # Type 4 is Processor
+    dmidecoder4 = DmiDecoder("-t 4", sort_keys=True, indent=2)  # Type 4 is Processor
 
-    reportSecs(dmidecode4.text, str(dmidecode4.data), getCpuInfo(dmidecode4))
+    reportSecs(dmidecoder4.text, str(dmidecoder4.data), getCpuInfo(dmidecoder4))

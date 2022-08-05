@@ -1,3 +1,3 @@
-from dmiparser.wrapper.dmidecode import DmiDecode
+from dmiparser.wrapper.dmidecoder import DmiDecoder
 
-__all__ = ["DmiDecode"]
+__all__ = ["DmiDecoder"]
