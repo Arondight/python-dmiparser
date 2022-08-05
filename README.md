@@ -12,7 +12,7 @@ pip3 install -U dmiparser
 
 ## Usage
 
-### Use directly
+### Use dmiparser directly
 
 ```python
 #!/usr/bin/env python3
@@ -72,7 +72,7 @@ if "__main__" == __name__:
     reportSecs(parsedStr, parsedObj)
 ```
 
-### Use a default wrapper
+### Use the default wrapper
 
 ```python
 from dmiparser.wrapper import DmiDecode
@@ -149,8 +149,10 @@ if "__main__" == __name__:
 ### Get full JSON text using an executable
 
 ```shell
-sudo dmiparser
+dmiparser
 ```
+
+> Tip: Root permissions are required here to run dmidecode.
 
 ## Development
 
