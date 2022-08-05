@@ -110,6 +110,9 @@ class DmiParser(object):
         self._parse()
 
     def __str__(self) -> str:
+        """
+        @return: JSON dump string
+        """
         return json.dumps(self._sections, **self._kwargs)
 
     def _parse(self) -> None:
