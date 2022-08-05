@@ -25,7 +25,7 @@ sudo dnf install ./dist/dmiparser-*.noarch.rpm
 
 ## Usage
 
-### Python3 script
+### Python 3 script
 
 #### DmiParser
 
@@ -180,7 +180,7 @@ sudo dmidecode >/tmp/dmidecode.txt
 dmiparser </tmp/dmidecode.txt
 ```
 
-### dmidecoder
+#### dmidecoder
 
 This run `dmidecode` and converts **full** output to JSON text.
 
@@ -195,6 +195,12 @@ sudo dmidecoder --format
 
 ```shell
 tox
+```
+
+### Format
+
+```shell
+black -l 120 ./dmiparser/ ./tests/
 ```
 
 ## License
