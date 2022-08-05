@@ -50,7 +50,7 @@ class DmiDecode(object):
         """
         return [(x["handle"]["id"], x["name"]) for x in self.data]
 
-    def get(self, *keys: str, id: str = "", name: str = "") -> list[str]:
+    def get(self, *keys: str, id: str = "", name: str = "") -> list:
         """get information for a section
 
         @param keys: hash keys for a section
@@ -85,7 +85,7 @@ class DmiDecode(object):
 
         return values
 
-    def getProp(self, prop: str, id: str = None, name: str = None) -> list[str]:
+    def getProp(self, prop: str, id: str = None, name: str = None) -> list:
         """get values for a section property
 
         @param prop: property name
