@@ -2,45 +2,60 @@
 
 ## About
 
-This parse dmidecode output to JSON text.
+This parse `dmidecode` output to JSON text.
 
 ## Installation
+
+### PyPI
 
 ```shell
 pip3 install -U dmiparser
 ```
 
+### RPM
+
+```shell
+git clone https://github.com/Arondight/python-dmiparser.git
+cd ./python-dmiparser/
+python3 ./setup.py bdist --format=rpm
+sudo dnf install ./dist/dmiparser-*.noarch.rpm
+```
+
+> Tip: Requires the `rpm-build` package in your Linux distribution.
+
 ## Usage
 
-### Use dmiparser directly
+### Python3 script
+
+#### DmiParser
+
+This accepts a `str` (with the output of `dmidecode`) as argument and converts it to JSON text.
 
 ```python
 #!/usr/bin/env python3
 import json
 from dmiparser import DmiParser
+from functools import partial
+from typing import Callable, Any
+
+
+def reportSecs(*args: str, brWidth=80) -> None:
+    """report texts format by section
+
+    @param args: text string
+    @param brWidth: br width
+    """
+    br: Callable[[Any], None] = lambda c: print("-" * c)
+    brn = partial(br, brWidth)
+
+    brn()
+
+    for text in args:
+        print(text)
+        brn()
 
 
 if "__main__" == __name__:
-    from functools import partial
-    from typing import Callable, Any
-
-
-    def reportSecs(*args: str, brWidth=80) -> None:
-        """report texts format by section
-
-        @param args: text string
-        @param brWidth: br width
-        """
-        br: Callable[[Any], None] = lambda c: print("-" * c)
-        brn = partial(br, brWidth)
-
-        brn()
-
-        for text in args:
-            print(text)
-            brn()
-
-
     text = (
         "# dmidecode 3.0\n"
         "Getting SMBIOS data from sysfs.\n"
@@ -72,74 +87,76 @@ if "__main__" == __name__:
     reportSecs(parsedStr, parsedObj)
 ```
 
-### Use the default wrapper
+#### DmiDecoder (the default wrapper)
+
+This runs `dmidecode` and converting the output of the command to JSON text.
 
 ```python
 from dmiparser.wrapper import DmiDecoder
-
-if "__main__" == __name__:
-    from functools import partial
-    from typing import Callable, Any
+from functools import partial
+from typing import Callable, Any
 
 
-    def getCpuInfo(dmidecoder) -> str:
-        """Get CPU information, will return text like below.
+def reportSecs(*args: str, brWidth=80) -> None:
+    """report texts format by section
 
-        CPU1:
-            Family: Xeon
-            Version: Intel(R) Xeon(R) CPU E5-2630 v4 @ 2.20GHz
-            Voltage: 1.8 V
-            Speed: 2200 MHz/4000 MHz
-            Status: Populated, Enabled
-            Core: 10/10
-            Thread: 20
-        CPU2:
-            Family: Xeon
-            Version: Intel(R) Xeon(R) CPU E5-2630 v4 @ 2.20GHz
-            Voltage: 1.8 V
-            Speed: 2200 MHz/4000 MHz
-            Status: Populated, Enabled
-            Core: 10/10
-            Thread: 20
+    @param args: text string
+    @param brWidth: br width
+    """
+    br: Callable[[Any], None] = lambda c: print("-" * c)
+    brn = partial(br, brWidth)
 
-        @param: dmidecode: DmiDecode object
-        @return: text of CPU information
-        """
-        text = ""
+    brn()
 
-        for id, name in dmidecoder.sections:
-            def getFirst(*args):
-                vals = dmidecoder.getProp(*args, id=id, name=name)
-                return vals[0] if len(vals) > 0 else None
-
-            text += "{}:\n".format(getFirst("Socket Designation"))
-            text += "\tFamily: {}\n".format(getFirst("Family"))
-            text += "\tVersion: {}\n".format(getFirst("Version"))
-            text += "\tVoltage: {}\n".format(getFirst("Voltage"))
-            text += "\tSpeed: {}/{}\n".format(getFirst("Current Speed"), getFirst("Max Speed"))
-            text += "\tStatus: {}\n".format(getFirst("Status"))
-            text += "\tCore: {}/{}\n".format(getFirst("Core Enabled"), getFirst("Core Count"))
-            text += "\tThread: {}\n".format(getFirst("Thread Count"))
-
-        return text
-
-
-    def reportSecs(*args: str, brWidth=80) -> None:
-        """report texts format by section
-
-        @param args: text string
-        @param brWidth: br width
-        """
-        br: Callable[[Any], None] = lambda c: print("-" * c)
-        brn = partial(br, brWidth)
-
+    for text in args:
+        print(text)
         brn()
 
-        for text in args:
-            print(text)
-            brn()
+
+def getCpuInfo(dmidecoder) -> str:
+    """Get CPU information, will return text like below.
+
+    CPU1:
+        Family: Xeon
+        Version: Intel(R) Xeon(R) CPU E5-2630 v4 @ 2.20GHz
+        Voltage: 1.8 V
+        Speed: 2200 MHz/4000 MHz
+        Status: Populated, Enabled
+        Core: 10/10
+        Thread: 20
+    CPU2:
+        Family: Xeon
+        Version: Intel(R) Xeon(R) CPU E5-2630 v4 @ 2.20GHz
+        Voltage: 1.8 V
+        Speed: 2200 MHz/4000 MHz
+        Status: Populated, Enabled
+        Core: 10/10
+        Thread: 20
+
+    @param: dmidecode: DmiDecode object
+    @return: text of CPU information
+    """
+    text = ""
+
+    for id, name in dmidecoder.sections:
+        def getFirst(*args):
+            vals = dmidecoder.getProp(*args, id=id, name=name)
+            return vals[0] if len(vals) > 0 else None
+
+        text += "{}:\n".format(getFirst("Socket Designation"))
+        text += "\tFamily: {}\n".format(getFirst("Family"))
+        text += "\tVersion: {}\n".format(getFirst("Version"))
+        text += "\tVoltage: {}\n".format(getFirst("Voltage"))
+        text += "\tSpeed: {}/{}\n".format(getFirst("Current Speed"), getFirst("Max Speed"))
+        text += "\tStatus: {}\n".format(getFirst("Status"))
+        text += "\tCore: {}/{}\n".format(getFirst("Core Enabled"), getFirst("Core Count"))
+        text += "\tThread: {}\n".format(getFirst("Thread Count"))
+
+    return text
 
 
+if "__main__" == __name__:
+    # dmidecoder = DmiDecoder()
     dmidecoder4 = DmiDecoder("-t 4", sort_keys=True, indent=2)  # Type 4 is Processor
 
     reportSecs(dmidecoder4.text, str(dmidecoder4.data), getCpuInfo(dmidecoder4))
@@ -147,13 +164,30 @@ if "__main__" == __name__:
 
 > Tip: Superuser permissions are required here to run `dmidecode`.
 
-### Get full JSON text using an executable
+### Executable command
+
+#### dmiparser
+
+This read output of `dmidecode` from pipe and converts it to JSON text.
 
 ```shell
-dmiparser --format
+sudo dmidecode | dmiparser
+sudo dmidecode -t 4 | dmiparser
 ```
 
-> Tip: Superuser permissions are required here to run `dmidecode`.
+```shell
+sudo dmidecode >/tmp/dmidecode.txt
+dmiparser </tmp/dmidecode.txt
+```
+
+### dmidecoder
+
+This run `dmidecode` and converts **full** output to JSON text.
+
+```shell
+sudo dmidecoder
+sudo dmidecoder --format
+```
 
 ## Development
 
