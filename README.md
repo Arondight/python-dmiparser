@@ -152,7 +152,7 @@ if "__main__" == __name__:
 dmiparser
 ```
 
-> Tip: Root permissions are required here to run dmidecode.
+> Tip: Superuser permissions are required here to run `dmidecode`.
 
 ## Development
 
