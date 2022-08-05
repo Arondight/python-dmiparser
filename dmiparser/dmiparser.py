@@ -1,8 +1,8 @@
+import json
+import re
 from enum import Enum, auto
 from itertools import takewhile
 from typing import Union
-import json
-import re
 
 __all__ = ["DmiParser"]
 
@@ -92,7 +92,7 @@ class DmiParserSection(object):
 
 
 class DmiParser(object):
-    """This parse dmidecode output to JSON"""
+    """This parse dmidecode output to JSON text"""
 
     def __init__(self, text: str, **kwargs) -> None:
         """
@@ -190,6 +190,7 @@ if "__main__" == __name__:
     from functools import partial
     from typing import Callable, Any
 
+
     def reportSecs(*args: str, brWidth=80) -> None:
         """report texts format by section
 
@@ -204,6 +205,7 @@ if "__main__" == __name__:
         for text in args:
             print(text)
             brn()
+
 
     text = (
         "# dmidecode 3.0\n"

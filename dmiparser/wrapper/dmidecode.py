@@ -1,6 +1,7 @@
-from dmiparser import DmiParser
-from subprocess import check_output
 import json
+from subprocess import check_output
+
+from dmiparser import DmiParser
 
 __all__ = ["DmiDecode"]
 
@@ -102,6 +103,7 @@ if "__main__" == __name__:
     from functools import partial
     from typing import Callable, Any
 
+
     def getCpuInfo(dmidecode) -> str:
         """Get CPU information, will return text like below.
 
@@ -128,7 +130,6 @@ if "__main__" == __name__:
         text = ""
 
         for id, name in dmidecode.sections:
-
             def getFirst(*args):
                 vals = dmidecode.getProp(*args, id=id, name=name)
                 return vals[0] if len(vals) > 0 else None
@@ -144,6 +145,7 @@ if "__main__" == __name__:
 
         return text
 
+
     def reportSecs(*args: str, brWidth=80) -> None:
         """report texts format by section
 
@@ -158,6 +160,7 @@ if "__main__" == __name__:
         for text in args:
             print(text)
             brn()
+
 
     dmidecode4 = DmiDecode("-t 4", sort_keys=True, indent=2)  # Type 4 is Processor
 

@@ -1,6 +1,7 @@
 import json
-from dmiparser import DmiParser
 from pathlib import Path
+
+from dmiparser import DmiParser
 
 RDIR = Path(Path(__file__).resolve()).parents[0]
 

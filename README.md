@@ -2,7 +2,7 @@
 
 ## About
 
-This parse dmidecode output to JSON.
+This parse dmidecode output to JSON text.
 
 ## Installation
 
@@ -146,10 +146,12 @@ if "__main__" == __name__:
     reportSecs(dmidecode4.text, str(dmidecode4.data), getCpuInfo(dmidecode4))
 ```
 
+> Tip: Superuser permissions are required here to run `dmidecode`.
+
 ### Get full JSON text using an executable
 
 ```shell
-dmiparser
+dmiparser --format
 ```
 
 > Tip: Superuser permissions are required here to run `dmidecode`.
