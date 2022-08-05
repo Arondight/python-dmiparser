@@ -1,0 +1,5 @@
+#!/usr/bin/env python3
+from dmiparser.wrapper import DmiDecode
+
+if "__main__" == __name__:
+    print(DmiDecode(sort_keys=True, indent=2).text)

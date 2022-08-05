@@ -1,8 +1,8 @@
-import json
-import re
 from enum import Enum, auto
 from itertools import takewhile
 from typing import Union
+import json
+import re
 
 __all__ = ["DmiParser"]
 
@@ -26,6 +26,9 @@ class DmiParserSectionHandle(object):
         self.bytes = 0
 
     def __str__(self) -> str:
+        """
+        @return: JSON dump string
+        """
         return json.dumps(self.__dict__)
 
 
@@ -39,15 +42,24 @@ class DmiParserSectionProp(object):
     """
 
     def __init__(self, value: str) -> None:
+        """
+        @param value: property text
+        """
         self.values = []
 
         if value:
             self.append(value)
 
     def __str__(self) -> str:
+        """
+        @return: JSON dump string
+        """
         return json.dumps(self.__dict__)
 
     def append(self, item: str) -> None:
+        """
+        @param item: item value
+        """
         self.values.append(item)
 
 
@@ -66,9 +78,16 @@ class DmiParserSection(object):
         self.props = {}
 
     def __str__(self) -> str:
+        """
+        @return: JSON dump string
+        """
         return json.dumps(self.__dict__)
 
     def append(self, key: str, prop: str) -> None:
+        """
+        @param key: property name
+        @param prop: property
+        """
         self.props[key] = prop
 
 
@@ -168,6 +187,24 @@ class DmiParser(object):
 
 
 if "__main__" == __name__:
+    from functools import partial
+    from typing import Callable, Any
+
+    def reportSecs(*args: str, brWidth=80) -> None:
+        """report texts format by section
+
+        @param args: text string
+        @param brWidth: br width
+        """
+        br: Callable[[Any], None] = lambda c: print("-" * c)
+        brn = partial(br, brWidth)
+
+        brn()
+
+        for text in args:
+            print(text)
+            brn()
+
     text = (
         "# dmidecode 3.0\n"
         "Getting SMBIOS data from sysfs.\n"
@@ -190,11 +227,10 @@ if "__main__" == __name__:
         "\n"
     )
 
-    parser = DmiParser(text)
-    # parser = DmiParser(text, sort_keys=True, indent=2)
+    # parser = DmiParser(text)
+    parser = DmiParser(text, sort_keys=True, indent=2)
 
-    # get string
-    print(str(parser))
+    parsedStr = str(parser)  # get str
+    parsedObj = json.loads(str(parser))  # get object
 
-    # get object
-    print(json.loads(str(parser)))
+    reportSecs(parsedStr, parsedObj)
