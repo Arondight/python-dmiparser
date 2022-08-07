@@ -36,22 +36,20 @@ This accepts a `str` (with the output of `dmidecode`) as argument and converts i
 import json
 from dmiparser import DmiParser
 from functools import partial
-from typing import Callable, Any
 
 
-def reportSecs(*args: str, brWidth=80) -> None:
-    """report texts format by section
+def report(*args: str) -> None:
+    """report texts with format
 
     @param args: text string
-    @param brWidth: br width
     """
-    br: Callable[[Any], None] = lambda c: print("-" * c)
-    brn = partial(br, brWidth)
+    br = lambda e: print("-" * e)
+    brn = partial(br, 80)
 
     brn()
 
-    for text in args:
-        print(text)
+    for e in args:
+        print(e)
         brn()
 
 
@@ -84,7 +82,7 @@ if "__main__" == __name__:
     parsedStr = str(parser)  # get str
     parsedObj = json.loads(str(parser))  # get object
 
-    reportSecs(parsedStr, parsedObj)
+    report(parsedStr, parsedObj)
 ```
 
 #### DmiDecoder (the default wrapper)
@@ -94,22 +92,20 @@ This runs `dmidecode` and converting the output of the command to JSON text.
 ```python
 from dmiparser.wrapper import DmiDecoder
 from functools import partial
-from typing import Callable, Any
 
 
-def reportSecs(*args: str, brWidth=80) -> None:
-    """report texts format by section
+def report(*args: str) -> None:
+    """report texts with format
 
     @param args: text string
-    @param brWidth: br width
     """
-    br: Callable[[Any], None] = lambda c: print("-" * c)
-    brn = partial(br, brWidth)
+    br = lambda e: print("-" * e)
+    brn = partial(br, 80)
 
     brn()
 
-    for text in args:
-        print(text)
+    for e in args:
+        print(e)
         brn()
 
 
@@ -159,7 +155,7 @@ if "__main__" == __name__:
     # dmidecoder = DmiDecoder()
     dmidecoder4 = DmiDecoder("-t 4", sort_keys=True, indent=2)  # Type 4 is Processor
 
-    reportSecs(dmidecoder4.text, str(dmidecoder4.data), getCpuInfo(dmidecoder4))
+    report(dmidecoder4.text, str(dmidecoder4.data), getCpuInfo(dmidecoder4))
 ```
 
 > Tip: Superuser permissions are required here to run `dmidecode`.
