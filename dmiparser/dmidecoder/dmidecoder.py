@@ -1,5 +1,6 @@
 import json
 from subprocess import check_output
+from typing import Union
 
 from dmiparser import DmiParser
 
@@ -9,7 +10,7 @@ __all__ = ["DmiDecoder"]
 class DmiDecoder(object):
     """This is a simple dmiparser wrapper"""
 
-    def __init__(self, arguments: str = None, command: str = "dmidecode", **kwargs) -> None:
+    def __init__(self, arguments: Union[str, None] = None, command: str = "dmidecode", **kwargs) -> None:
         """
         @param arguments: command's extra arguments like "-t 4"
         @param command: an executable dmidecode command

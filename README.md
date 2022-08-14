@@ -87,10 +87,10 @@ if "__main__" == __name__:
 
 #### DmiDecoder (the default wrapper)
 
-This runs `dmidecode` and converting the output of the command to JSON text.
+This run `dmidecode` and converting the output of the command to JSON text.
 
 ```python
-from dmiparser.wrapper import DmiDecoder
+from dmiparser.dmidecoder import DmiDecoder
 from functools import partial
 
 
@@ -164,11 +164,11 @@ if "__main__" == __name__:
 
 #### dmiparser
 
-This read output of `dmidecode` from pipe and converts it to JSON text.
+This read output of `dmidecode` from pipe and print it as JSON text.
 
 ```shell
 sudo dmidecode | dmiparser
-sudo dmidecode -t 4 | dmiparser
+sudo dmidecode -t 4 | dmiparser --format
 ```
 
 ```shell
@@ -176,14 +176,19 @@ sudo dmidecode >/tmp/dmidecode.txt
 dmiparser </tmp/dmidecode.txt
 ```
 
+> Tip: you can run `dmiparser` module as a script (use `python3 -m dmiparser` instead of `dmiparser` command).
+
 #### dmidecoder
 
-This run `dmidecode` and converts **full** output to JSON text.
+This run `dmidecode` and print the output as JSON text.
 
 ```shell
 sudo dmidecoder
-sudo dmidecoder --format
+sudo dmidecoder --arguments "-t 4" --format
 ```
+
+> Tip: you can run `dmiparser.dmidecoder` module as a script (use `python3 -m dmiparser.dmidecoder` instead
+> of `dmidecoder` command).
 
 ## Development
 

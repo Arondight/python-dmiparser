@@ -1,14 +1,17 @@
 from dmiparser.dmiparser import DmiParser
 
-__version__ = "4.0"
-__all__ = ["DmiParser"]
+__version__ = "5.0"
+__all__ = ["DmiParser", "main"]
 
 
 def main() -> None:
     from sys import stdin
+    from argparse import ArgumentParser
 
-    print(str(DmiParser(stdin.read(), sort_keys=True, indent=2)))
+    parser = ArgumentParser(description="This parse dmidecode output to JSON text")
+    parser.add_argument("-f", "--format", action="store_true", required=False, help="format JSON text")
+    args = parser.parse_args()
+    fmtOpts = {"sort_keys": True, "indent": 2}
+    dmiparser = DmiParser(stdin.read(), **(fmtOpts if args.format is True else {}))
 
-
-if "__main__" == __name__:
-    main()
+    print(str(dmiparser))
