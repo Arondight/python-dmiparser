@@ -1,6 +1,6 @@
 from dmiparser.dmiparser import DmiParser
 
-__version__ = "5.0"
+__version__ = "5.1"
 __all__ = ["DmiParser", "main"]
 
 
